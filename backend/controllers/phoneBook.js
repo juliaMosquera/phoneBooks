@@ -1,33 +1,18 @@
 import phoneBook from "../models/phoneBook.js";
 import contact from "../models/contact.js";
-import jwt from "jsonwebtoken";
-import moment from "moment";
 
 const registerPhoneBook = async(req, res) => {
 
     const phoneBookSchema = new phoneBook({
         name: req.body.name,
-        quantityContact: 10
     });
 
     const result = await phoneBookSchema.save();
 
-    if(!result)
-    return res.status(500).send({ message: "Failed to register phoneBook"});
+    return !result
+    ? res.status(500).send({ message: "Error - Please restart" })
+    : res.status(200).send({ message: "Welcome" });
 
-    try {
-    return res.status(200).json({
-        token: jwt.sign({
-            _id: result._id,
-            name: result.name,
-            iat: moment().unix()
-        },
-        process.env.SK_JWT
-        ),
-    });
-    } catch (e) {
-        return res.status(500).send({message: "Register error"});
-    }
 };
 
 const fullDirectory = async (req, res) =>{
